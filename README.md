@@ -1,5 +1,3 @@
-# BrightHR QA Automation Task
-
 - **Node.js 18+** (Node 20 recommended)
 - **npm**
 
@@ -41,10 +39,10 @@ If auth gets out of sync locally, delete: `.auth/storageState.json` and rerun te
 
 ## Project structure
 
-tests/ # Test specs + global setup (storageState)
-pages/ # Page objects (login + employees)
-utils/ # Env loading + test data generation
-.github/workflows/ # CI workflow
+- tests/ Test specs + global setup (storageState)
+- pages/ Page objects (login + employees)
+- utils/ Env loading + test data generation
+- .github/orkflows/ CI workflow
 
 ## CI (GitHub Actions)
 
@@ -60,6 +58,5 @@ The workflow installs dependencies and Playwright browsers, runs tests headless,
 
 - `playwright-report` (HTML report)
 - `test-results` (screenshots/traces/videos depending on config)
-"""
 with open("playwright_setup_guide.md", "w") as file:
     file.write(content)
