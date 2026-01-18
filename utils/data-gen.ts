@@ -1,4 +1,4 @@
-import { randomUUID } from "crypto";
+import { randomBytes } from "crypto";
 
 export type EmployeeData = {
     firstName: string;
@@ -13,8 +13,9 @@ export type EmployeeData = {
 };
 
 function uniq(): string {
-    return randomUUID();
+     return randomBytes(4).toString("hex");
 }
+
 
 // Generates realistic, unique employee test data
  
@@ -27,7 +28,7 @@ export function buildEmployee(overrides: Partial<EmployeeData> = {}): EmployeeDa
         email: `ryanb1463+e2e-${id}@gmail.com`,
         phoneNumber: `07${Math.floor(100000000 + Math.random() * 900000000)}`,
         jobTitle: `QA ${id.slice(-5)}`,
-        startDate: "2026-01-18",
+        startDate: "2026-01-09",
         sendRegistrationEmail: true,
         ...overrides,
     };

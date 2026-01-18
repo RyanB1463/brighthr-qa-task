@@ -6,23 +6,23 @@ import * as path from "path";
 const STORAGE_STATE_PATH = path.resolve(__dirname, "..", ".auth", "storageState.json");
 
 export default async function globalSetup(_config: FullConfig) {
-  fs.mkdirSync(path.dirname(STORAGE_STATE_PATH), { recursive: true });
+    fs.mkdirSync(path.dirname(STORAGE_STATE_PATH), { recursive: true });
 
-  const browser = await chromium.launch();
-  const page = await browser.newPage();
+    const browser = await chromium.launch();
+    const page = await browser.newPage();
 
-  await page.goto(`${env.BASE_URL}/login`, { waitUntil: "domcontentloaded" });
+    await page.goto(`${env.BASE_URL}/login`, { waitUntil: "domcontentloaded" });
 
-  await page.locator("#username").fill(env.EMAIL);
-  await page.locator("#password").fill(env.PASSWORD);
-  await page.getByTestId("login-button").click();
+    await page.locator("#username").fill(env.EMAIL);
+    await page.locator("#password").fill(env.PASSWORD);
+    await page.getByTestId("login-button").click();
 
-  await expect(page.getByTestId("Dashboard")).toBeVisible();
+    await expect(page.getByTestId("Dashboard")).toBeVisible();
 
-  // (Optional)
-  // await expect(page.getByTestId("brightLogo")).toBeVisible();
+    // (Optional)
+    // await expect(page.getByTestId("brightLogo")).toBeVisible();
 
-  await page.context().storageState({ path: STORAGE_STATE_PATH });
+    await page.context().storageState({ path: STORAGE_STATE_PATH });
 
-  await browser.close();
+    await browser.close();
 }

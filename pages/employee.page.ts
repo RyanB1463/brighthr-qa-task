@@ -4,7 +4,6 @@ import { EmployeeData } from "../utils/data-gen";
 export class EmployeePage {
     constructor(private readonly page: Page) { }
 
-
     private sidebar(): Locator {
         return this.page.getByTestId("sideBar");
     }
@@ -13,11 +12,9 @@ export class EmployeePage {
         return this.sidebar().locator('a[data-e2e="employees"][href="/employee-hub"]');
     }
 
-
     private addEmployeeButton(): Locator {
         return this.page.getByRole("button", { name: "Add employee" });
     }
-
 
     private addEmployeeHeading(): Locator {
         return this.page.getByRole("heading", { name: "Add new employee" });
@@ -67,7 +64,10 @@ export class EmployeePage {
         return this.page.getByRole("button", { name: "Add another employee" });
     }
 
-    // Helpers
+    private closeModalButton(): Locator {
+        return this.page.getByRole("button", { name: "Close modal" });
+    }
+
     private isoToAriaLabel(isoDate: string): string {
         const d = new Date(`${isoDate}T00:00:00Z`);
         const weekdays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
@@ -84,7 +84,6 @@ export class EmployeePage {
     private dayCellByAriaLabel(label: string): Locator {
         return this.dayPickerPanel().getByRole("gridcell", { name: label });
     }
-
 
     async goto(): Promise<void> {
         await expect(this.sidebar()).toBeVisible();
@@ -106,14 +105,12 @@ export class EmployeePage {
         if (data.phoneNumber) await this.phoneNumberInput().fill(data.phoneNumber);
         if (data.jobTitle) await this.jobTitleInput().fill(data.jobTitle);
 
-        // Checkbox state (default true)
         const shouldSend = data.sendRegistrationEmail ?? true;
         const isChecked = await this.registrationEmailCheckbox().isChecked();
         if (shouldSend !== isChecked) {
             await this.registrationEmailCheckbox().click();
         }
 
-        // Optional start date
         if (data.startDate) {
             await this.startDateTrigger().click();
             await expect(this.dayPickerPanel()).toBeVisible();
@@ -136,7 +133,6 @@ export class EmployeePage {
     }
 
     async addAnotherEmployee(data: EmployeeData): Promise<void> {
-        // Precondition if success modal visible
         await expect(this.successModalHeading()).toBeVisible();
 
         await this.addAnotherEmployeeButton().click();
@@ -145,5 +141,34 @@ export class EmployeePage {
         await this.fillEmployeeForm(data);
         await this.saveEmployee();
         await expect(this.successModalHeading()).toBeVisible();
+    }
+
+    async closeSuccessModal(): Promise<void> {
+        const close = this.closeModalButton();
+        if (await close.isVisible().catch(() => false)) {
+            await close.click();
+            await expect(close).toHaveCount(0);
+        }
+    }
+
+    async expectEmployeeListed(data: EmployeeData): Promise<void> {
+        const fullName = `${data.firstName} ${data.lastName}`;
+
+        const name = this.page.locator("h1", { hasText: fullName });
+        await expect(name, `Employee name should be visible: ${fullName}`).toBeVisible();
+
+        // Walk up from the name to the card root
+        const card = name
+            .locator("..")
+            .locator("..")
+            .locator("..")
+            .filter({ has: this.page.getByTestId("EditButton") });
+
+        await expect(card, `Employee card should be unique for: ${fullName}`).toHaveCount(1);
+        await expect(card, `Employee card should exist for: ${fullName}`).toBeVisible();
+
+        if (data.jobTitle) {
+            await expect(card).toContainText(data.jobTitle);
+        }
     }
 }
