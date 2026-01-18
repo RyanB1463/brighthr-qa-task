@@ -1,3 +1,5 @@
+# BrightHR QA Automation Task
+
 - **Node.js 18+** (Node 20 recommended)
 - **npm**
 
