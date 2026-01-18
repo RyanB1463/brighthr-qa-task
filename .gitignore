@@ -1,0 +1,22 @@
+# Dependencies
+node_modules/
+
+# Local environment variables (secrets)
+.env
+
+# Playwright artifacts
+playwright-report/
+test-results/
+blob-report/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
