@@ -15,12 +15,14 @@ export default async function globalSetup(_config: FullConfig) {
 
     await page.locator("#username").fill(env.EMAIL);
     await page.locator("#password").fill(env.PASSWORD);
-    await page.getByTestId("login-button").click();
 
-    await expect(page.getByTestId("Dashboard")).toBeVisible();
+    // Click and wait for the auth redirect to settle
+    await Promise.all([
+        page.waitForLoadState("networkidle"),
+        page.getByTestId("login-button").click(),
+    ]);
 
-    // (Optional)
-    // await expect(page.getByTestId("brightLogo")).toBeVisible();
+    await expect(page.getByTestId("sideBar")).toBeVisible({ timeout: 30_000 });
 
     await page.context().storageState({ path: STORAGE_STATE_PATH });
 
