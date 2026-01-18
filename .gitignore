@@ -3,6 +3,7 @@ node_modules/
 
 # Local environment variables (secrets)
 .env
+.auth/
 
 # Playwright artifacts
 playwright-report/
